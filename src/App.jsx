@@ -139,6 +139,10 @@ export default function App() {
   // --- Render Logic ---
   if (loading) return <div className="loading-screen">...</div>;
 
+  <button onClick={uploadMembersToCloud} className="fixed top-20 right-4 z-[100] bg-red-500 text-white p-2">
+  同步成員到雲端
+</button>
+
   return (
     <div className="min-h-screen bg-[#F8F7F2] text-[#2A3B49] pb-32 font-sans antialiased">
       <header className="p-6 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 shadow-sm">
