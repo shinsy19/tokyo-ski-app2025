@@ -234,3 +234,20 @@ nav {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   transform: rotate(-2deg); /* 隨機旋轉感 */
 }
+
+/* 日期列容器 */
+.flex.gap-3.overflow-x-auto {
+  padding-left: 24px; /* 增加左側間距，讓 12/31 不要貼死邊緣 */
+  scroll-padding-left: 24px;
+}
+
+/* 針對第一個日期按鈕的特殊裝飾 (可選) */
+.itinerary-timeline button:first-child::after {
+  content: 'START';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  font-size: 8px;
+  color: var(--accent-brown);
+  font-weight: 900;
+}

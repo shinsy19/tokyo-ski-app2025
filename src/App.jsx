@@ -130,8 +130,19 @@ export default function App() {
   useEffect(() => {
     // 監聽行程
     const qItinerary = query(collection(db, "itinerary"), orderBy("date", "asc"));
-    const unsubItinerary = onSnapshot(qItinerary, (snap) => {
-      setItineraryData(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+   const unsubItinerary = onSnapshot(qItinerary, (snap) => {
+      // 1. 先將 Firestore 的原始資料取出
+      const rawData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // 2. 自定義排序：強制讓 12/31 置頂（排在最左邊）
+      const sortedData = rawData.sort((a, b) => {
+        if (a.date.includes('12/31')) return -1;
+        if (b.date.includes('12/31')) return 1;
+        // 如果都不是 12/31，則依照日期字串排序
+        return a.date.localeCompare(b.date);
+      });
+
+      setItineraryData(sortedData);
       setLoading(false);
     });
 
@@ -217,7 +228,9 @@ export default function App() {
                 onClick={() => { setDayIdx(i); setGroupIdx(0); }}
                 className={`flex-none px-5 py-3 rounded-2xl border transition-all ${dayIdx === i ? 'bg-[#CC8F46] text-white shadow-md scale-105' : 'bg-white opacity-40'}`}
               >
-                <span className="text-xs font-black">{d.date}</span>
+                <span className={`text-xs font-black ${d.date.includes('12/31') ? 'tracking-tighter' : ''}`}>
+      {d.date}
+    </span>
               </button>
             ))}
           </div>
@@ -305,13 +318,12 @@ export default function App() {
                       />
                     ))}
                   </div>
-                </div>
-              </div>
+                  </div>
+                  </div>
             ))}
-        </div>
+          </div>
         </main>
-  )
-}
+      )}
 
 {
   tab === 'booking' && (
@@ -570,15 +582,19 @@ export default function App() {
           )}
           {/* 按鈕結尾修正 */}
           {selectedSki.details.web && (
-            <a href={selectedSki.details.web} target="_blank" rel="noreferrer" className="block w-full bg-[#4E9A8E] text-white text-center py-4 rounded-2xl text-xs font-black">
+            <a 
+              href={selectedSki.details.web} 
+              target="_blank" 
+              rel="noreferrer" 
+              className="block w-full bg-[#4E9A8E] text-white text-center py-4 rounded-2xl text-xs font-black"
+            >
               查看更多介紹
             </a>
           )}
         </div>
       </div>
-    </div>
-  )
-}
+      </div>
+  )}
     </div> 
   );   
 }      

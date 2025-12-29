@@ -161,40 +161,31 @@ const filteredShoppingList = useMemo(() => {
         </div>
       ) : activeTab === '購物清單' ? (
         <div className="mt-4">
-    {/* 3. 新增：分類標籤按鈕列 */}
-    <div className="flex gap-2 overflow-x-auto px-6 mb-4 no-scrollbar">
-      {shopCategories.map(cat => (
-        <button
-          key={cat}
-          onClick={() => setShopFilter(cat)}
-          className={`flex-none px-4 py-1.5 rounded-xl text-[10px] font-black border transition-all ${
-            shopFilter === cat 
-            ? 'bg-[#CC8F46] text-white border-[#CC8F46] shadow-sm' 
-            : 'bg-white text-gray-400 border-gray-100'
-          }`}
-        >
-          {cat}
-        </button>
-      ))}
-    </div>
+          {/* 分類標籤按鈕列 */}
+          <div className="flex gap-2 overflow-x-auto px-6 mb-4 no-scrollbar">
+            {shopCategories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setShopFilter(cat)}
+                className={`flex-none px-4 py-1.5 rounded-xl text-[10px] font-black border transition-all ${
+                  shopFilter === cat 
+                  ? 'bg-[#CC8F46] text-white border-[#CC8F46] shadow-sm' 
+                  : 'bg-white text-gray-400 border-gray-100'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-    {/* 4. 修改：傳入 filteredShoppingList */}
-    <ShoppingPage 
-      members={members} 
-      items={filteredShoppingList} 
-      onAdd={onAddShopping} 
-      onToggle={onToggleShopping} 
-      onDelete={onDeleteShopping} 
-    />
-  </div>
-) : (
-        <ShoppingPage 
-          members={members} 
-          items={shoppingList} 
-          onAdd={onAddShopping} 
-          onToggle={onToggleShopping} 
-          onDelete={onDeleteShopping} 
-        />
+          <ShoppingPage 
+            members={members} 
+            items={filteredShoppingList} 
+            onAdd={onAddShopping} 
+            onToggle={onToggleShopping} 
+            onDelete={onDeleteShopping} 
+          />
+        </div>
       ) : (
         <>
           {/* 成員/全體切換 */}
