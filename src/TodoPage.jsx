@@ -1,0 +1,181 @@
+import React, { useState } from 'react';
+// 🟢 修正：補上 Trash2 圖示導入
+import { Plus, CheckCircle2, Circle, Users, Edit3, Check, X, Trash2 } from 'lucide-react';
+
+// 🟢 修正：在參數列加入 onDeleteTodo
+export default function TodoPage({ todos, members, onAddTodo, onToggleTodo, onUpdateTodo, onDeleteTodo }) {
+  const [newTodoText, setNewTodoText] = useState("");
+  const [selectedAssignees, setSelectedAssignees] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState("");
+
+  // 處理新增
+  const handleAddClick = () => {
+    if (!newTodoText.trim()) return;
+    const newTodo = {
+      text: newTodoText,
+      assignees: selectedAssignees.length > 0 ? selectedAssignees : ["全體"],
+      completedBy: [],
+      createdAt: new Date()
+    };
+    onAddTodo(newTodo);
+    setNewTodoText("");
+    setSelectedAssignees([]);
+  };
+
+  // 處理修改文字內容
+  const startEditing = (todo) => {
+    setEditingId(todo.firestoreId);
+    setEditText(todo.text);
+  };
+
+  const handleUpdate = (id) => {
+    if (onUpdateTodo) {
+      onUpdateTodo(id, { text: editText });
+    }
+    setEditingId(null);
+  };
+
+  // 🔴 修正：處理刪除任務
+  const handleDelete = (id) => {
+    if (window.confirm("確定要刪除這項待辦任務嗎？")) {
+      onDeleteTodo(id); // 🟢 呼叫傳入的屬性
+    }
+  };
+
+  // 🟢 修正：刪除原本重複定義的 toggleAssigneeSelection
+  const toggleAssigneeSelection = (name) => {
+    setSelectedAssignees(prev => 
+      prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]
+    );
+  };
+
+  return (
+    <div className="px-6 space-y-6 animate-in fade-in pb-20">
+      {/* 1. 新增任務 */}
+      <div className="bg-white p-5 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-4">
+        <div className="flex gap-2">
+          <input 
+            type="text" 
+            value={newTodoText}
+            onChange={(e) => setNewTodoText(e.target.value)}
+            placeholder="新增公用待辦..." // 🟢 修正：符合您的需求改為「待辦」
+            className="flex-1 bg-gray-50 border-none px-5 py-3 rounded-2xl text-xs font-bold outline-none"
+          />
+          <button onClick={handleAddClick} className="bg-[#2A3B49] text-white p-3 rounded-2xl shadow-lg active:scale-95 transition-transform">
+            <Plus size={20} />
+          </button>
+        </div>
+        <div className="space-y-2">
+          <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest px-1">指派給 (選填)</p>
+          <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+            {members.map(m => (
+              <button
+                key={m.firestoreId || m.id}
+                onClick={() => toggleAssigneeSelection(m.name)}
+                className={`flex-none flex items-center gap-2 px-3 py-2 rounded-xl border transition-all ${
+                  selectedAssignees.includes(m.name) ? 'border-[#4E9A8E] bg-[#4E9A8E]/10 text-[#4E9A8E]' : 'border-gray-100 text-gray-400'
+                }`}
+              >
+                <img src={m.avatar} className="w-4 h-4 rounded-full" alt="" />
+                <span className="text-[10px] font-bold">{m.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 2. 任務列表 */}
+      <div className="space-y-6">
+        {todos.map(todo => {
+          const targetMembers = todo.assignees.includes("全體") ? members.map(m => m.name) : todo.assignees;
+          const doneList = todo.completedBy || [];
+          const notDoneList = targetMembers.filter(name => !doneList.includes(name));
+          const progress = Math.round((doneList.filter(name => targetMembers.includes(name)).length / targetMembers.length) * 100);
+
+          return (
+            <div key={todo.firestoreId} className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-gray-100 relative overflow-hidden">
+              <div className="absolute top-0 left-0 h-1 bg-[#4E9A8E] transition-all duration-500" style={{ width: `${progress}%` }} />
+
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex-1">
+                  {editingId === todo.firestoreId ? (
+                    <div className="flex gap-2">
+                      <input 
+                        value={editText} 
+                        onChange={(e) => setEditText(e.target.value)}
+                        className="flex-1 border-b-2 border-[#4E9A8E] text-sm font-bold outline-none"
+                      />
+                      <button onClick={() => handleUpdate(todo.firestoreId)} className="text-green-500"><Check size={18}/></button>
+                      <button onClick={() => setEditingId(null)} className="text-red-400"><X size={18}/></button>
+                    </div>
+                  ) : (
+                    <div className="group flex items-center gap-2">
+                      <h3 className="font-bold text-base text-[#2A3B49] leading-tight">{todo.text}</h3>
+                      <button onClick={() => startEditing(todo)} className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-[#4E9A8E] transition-all">
+                        <Edit3 size={14} />
+                      </button>
+                    </div>
+                  )}
+                  <span className="text-[9px] font-black text-[#CC8F46] bg-orange-50 px-2 py-0.5 rounded mt-2 inline-block">
+                    {todo.assignees.join(' · ')}
+                  </span>
+                </div>
+                
+                {/* 🔴 修正：調整刪除按鈕佈局，確保不遮擋進度百分比 */}
+                <div className="flex flex-col items-end gap-2">
+                  <div className="text-right font-black italic text-xl text-[#4E9A8E]">{progress}%</div>
+                  <button 
+                    onClick={() => handleDelete(todo.firestoreId)}
+                    className="text-gray-200 hover:text-red-400 transition-colors p-1"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {/* 分層顯示頭像 */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <p className="text-[8px] font-black text-gray-300 uppercase italic">Waiting for:</p>
+                  <div className="flex flex-wrap gap-4">
+                    {notDoneList.map(name => {
+                      const m = members.find(member => member.name === name);
+                      return (
+                        <button key={name} onClick={() => onToggleTodo(todo.firestoreId, name, true)} className="text-center group">
+                          <img src={m?.avatar} className="w-10 h-10 rounded-full border-2 border-gray-100 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                          <p className="text-[8px] font-bold text-gray-400 mt-1">{name}</p>
+                        </button>
+                      );
+                    })}
+                    {notDoneList.length === 0 && <p className="text-[10px] font-bold text-[#4E9A8E] italic">All members done!</p>}
+                  </div>
+                </div>
+
+                <div className="border-t border-dashed border-gray-100 my-2" />
+
+                <div className="space-y-2">
+                  <p className="text-[8px] font-black text-[#4E9A8E] uppercase italic">Completed:</p>
+                  <div className="flex flex-wrap gap-4">
+                    {doneList.filter(name => targetMembers.includes(name)).map(name => {
+                      const m = members.find(member => member.name === name);
+                      return (
+                        <button key={name} onClick={() => onToggleTodo(todo.firestoreId, name, false)} className="text-center relative">
+                          <img src={m?.avatar} className="w-10 h-10 rounded-full border-2 border-[#4E9A8E]" />
+                          <div className="absolute -top-1 -right-1 bg-[#4E9A8E] text-white rounded-full p-0.5 shadow-sm">
+                            <CheckCircle2 size={10} fill="white" color="#4E9A8E" />
+                          </div>
+                          <p className="text-[8px] font-bold text-[#4E9A8E] mt-1">{name}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

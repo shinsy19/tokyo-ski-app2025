@@ -1,0 +1,72 @@
+/* 1. 基礎重設與背景紋理 */
+:root {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  background-color: #F8F7F2; /* 淺米色背景，模擬紙張感 */
+}
+
+#root {
+  max-width: 480px; /* 鎖定手機寬度，模擬 App 畫面 */
+  margin: 0 auto;
+  min-h-screen: 100vh;
+  padding: 0;
+  text-align: left; /* 改為靠左對齊，方便閱讀行程 */
+  
+  /* 加入點狀背景紋理 */
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* 2. 票券感與手寫風格字體 */
+h1, h2, .ticket-title {
+  font-style: italic; /* 模擬機票上的斜體字 */
+  letter-spacing: -0.05em;
+}
+
+/* 住宿 PDF 側邊日期標籤 */
+.date-sidebar {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  color: #2A3B49;
+  font-weight: 900;
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+/* 3. 卡片設計優化 */
+.card {
+  background: white;
+  border-radius: 2.5rem; /* 大圓角設計 */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.card:active {
+  transform: scale(0.98); /* 點擊時的縮放反饋 */
+}
+
+/* 4. 導覽列優化 */
+nav {
+  backdrop-filter: blur(10px);
+  background-color: rgba(42, 59, 73, 0.95); /* 深色導覽列 */
+}
+
+/* 5. 攻略高亮 (導遊標籤) */
+.highlight-note {
+  background-color: #fef08a; /* 淺黃色高亮 */
+  color: #7c2d12;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* 6. 移除不必要的 Logo 動畫樣式 */
+.logo {
+  height: 3em;
+  padding: 1em;
+}
