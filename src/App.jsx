@@ -91,6 +91,39 @@ export default function App() {
     }
   };
 
+  const handleUpdateTodo = useCallback(async (todoId, updates) => {
+    try {
+      const todoRef = doc(db, "todos", todoId);
+      await updateDoc(todoRef, updates);
+    } catch (e) { console.error("更新代辦失敗:", e); }
+  }, []);
+
+  const handleDeleteShopping = useCallback(async (itemId) => {
+    try {
+      const itemRef = doc(db, "shopping", itemId);
+      await deleteDoc(itemRef);
+    } catch (e) { console.error("刪除購物項目失敗:", e); }
+  }, []);
+
+  const handleAddPost = useCallback(async (newPost) => {
+    try {
+      await addDoc(collection(db, "journal"), { ...newPost, createdAt: serverTimestamp() });
+    } catch (e) { console.error("發布日誌失敗:", e); }
+  }, []);
+
+  const handleAddMember = useCallback(async (newMember) => {
+    try {
+      await addDoc(collection(db, "members"), newMember);
+    } catch (e) { console.error("新增成員失敗:", e); }
+  }, []);
+
+  const handleDeleteMember = useCallback(async (id) => {
+    if (!window.confirm("確定移除？")) return;
+    try {
+      await deleteDoc(doc(db, "members", id));
+    } catch (e) { console.error("刪除成員失敗:", e); }
+  }, []);
+
   // --- Firebase 即時監聽 (useEffect) ---
 
   useEffect(() => {
@@ -475,16 +508,16 @@ export default function App() {
   />)}
       {tab === 'planning' &&(
   <PlanningPage 
-    members={members} 
-  todos={todos} 
-  shoppingList={shoppingList} // 🟢 確保購物清單資料也有傳
-  onAddTodo={handleAddTodo} 
-  onToggleTodo={handleToggleTodo} 
-  onUpdateTodo={handleUpdateTodo} // 🟢 補上這行
-  onDeleteTodo={handleDeleteTodo} // 🟢 補上這行
-  onAddShopping={handleAddShopping}
-  onToggleShopping={handleToggleShopping}
-  onDeleteShopping={handleDeleteShopping} // 🟢 補上這一行
+  members={members} 
+    todos={todos} 
+    shoppingList={shoppingList}
+    onAddTodo={handleAddTodo} 
+    onToggleTodo={handleToggleTodo} 
+    onUpdateTodo={handleUpdateTodo}    // 🟢 確認這行已加上
+    onDeleteTodo={handleDeleteTodo}
+    onAddShopping={handleAddShopping}
+    onToggleShopping={handleToggleShopping}
+    onDeleteShopping={handleDeleteShopping} // 🟢 補上這一行
   />
 )}
       {tab === 'members' && (
