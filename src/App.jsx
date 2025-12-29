@@ -1,23 +1,31 @@
-import { db } from './firebase'; 
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+// 1. 統一導入 Firebase 方法
+import { db } from './firebase';
+import { 
+  collection, onSnapshot, query, orderBy, addDoc, 
+  doc, updateDoc, deleteDoc, serverTimestamp, 
+  arrayUnion, arrayRemove 
+} from 'firebase/firestore';
+
+// 2. 第三方庫與組件
+import { 
+  Calendar, Plane, Ticket, Users, Hotel, Luggage, MapPin, 
+  Navigation, Train, Shirt, PenTool, ExternalLink, Sparkles, X 
+} from 'lucide-react';
 import { itinerary, bookings, membersData } from './data';
 import PlanningPage from './PlanningPage';
 import MembersPage from './MembersPage';
 import JournalPage from './JournalPage';
-import { 
-  Calendar, Plane, Ticket, Users, Hotel, Luggage, MapPin, Navigation, 
-  Train, Shirt, PenTool, ExternalLink, Sparkles, X
-} from 'lucide-react';
 import './App.css';
 
 export default function App() {
+  // --- States ---
   const [tab, setTab] = useState('schedule');
   const [selectedSki, setSelectedSki] = useState(null);
   const [dayIdx, setDayIdx] = useState(0);
   const [groupIdx, setGroupIdx] = useState(0);
   const [bookingSubTab, setBookingSubTab] = useState('flight');
-  const [itineraryData, setItineraryData] = useState([]); 
+  const [itineraryData, setItineraryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const [todos, setTodos] = useState([]);
@@ -25,230 +33,111 @@ export default function App() {
   const [members, setMembers] = useState(membersData);
   const [selectedDate, setSelectedDate] = useState("");
 
-  // 1. 新增任務的邏輯
-const handleAddTodo = async (newTodo) => {
-  const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
-  try {
-    // 將代辦事項寫入 Firestore 的 todos 集合
-    await addDoc(collection(db, "todos"), {
-      ...newTodo,
-      createdAt: serverTimestamp() // 自動加上伺服器時間，方便排序
-    });
-  } catch (e) {
-    console.error("新增待辦失敗:", e);
-    alert("雲端同步失敗，請檢查網路");
-  }
-};
-
-// 2. 切換「完成/未完成」狀態的邏輯 (一併補上)
-const handleToggleTodo = async (todoId, memberName, isDone) => {
-  const { doc, updateDoc, arrayUnion, arrayRemove } = await import("firebase/firestore");
-  try {
-    const todoRef = doc(db, "todos", todoId);
-    await updateDoc(todoRef, {
-      // 如果 isDone 為 true，把名字加進已完成清單；否則移除
-      completedBy: isDone ? arrayUnion(memberName) : arrayRemove(memberName)
-    });
-  } catch (e) {
-    console.error("更新狀態失敗:", e);
-  }
-};
-const handleUpdateTodo = async (todoId, updates) => {
-  const { doc, updateDoc } = await import("firebase/firestore");
-  try {
-    // 取得該代辦事項的雲端參照
-    const todoRef = doc(db, "todos", todoId);
-    // 執行更新（例如修改 text 欄位）
-    await updateDoc(todoRef, updates);
-  } catch (e) {
-    console.error("更新代辦失敗:", e);
-    alert("修改失敗，請檢查網路連線");
-  }
-};
-
-
-const handleDeleteTodo = async (todoId) => {
-  const { doc, deleteDoc } = await import("firebase/firestore");
-  try {
-    const todoRef = doc(db, "todos", todoId);
-    await deleteDoc(todoRef);
-  } catch (e) {
-    console.error("刪除失敗:", e);
-  }
-};
-const handleAddShopping = async (newItem) => {
-  const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
-  await addDoc(collection(db, "shopping"), { ...newItem, completed: false,      // 預設未購買
-      completedBy: null,     // 預設無人購買
-      createdAt: serverTimestamp() });
-};
-
-const handleToggleShopping = async (id, memberName, isCompleted) => {
-  const { doc, updateDoc } = await import("firebase/firestore");
-  await updateDoc(doc(db, "shopping", id), {
-    completed: isCompleted,
-    completedBy: isCompleted ? memberName : null // 儲存是誰買的
-  });
-};
-const handleDeleteShopping = async (itemId) => {
-  const { doc, deleteDoc } = await import("firebase/firestore");
-  try {
-    const itemRef = doc(db, "shopping", itemId);
-    await deleteDoc(itemRef);
-  } catch (e) {
-    console.error("刪除購物項目失敗:", e);
-  }
-};
-
-useEffect(() => {
-    // 建立查詢 (Query)
-    const q = query(collection(db, "itinerary"), orderBy("date", "asc"));
-
-    // 啟動即時監聽 (Real-time Listener)
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const docs = [];
-      snapshot.forEach((doc) => {
-        docs.push({ id: doc.id, ...doc.data() });
+  // --- Firebase 寫入邏輯 (使用 useCallback 優化效能) ---
+  
+  const handleAddTodo = useCallback(async (newTodo) => {
+    try {
+      await addDoc(collection(db, "todos"), {
+        ...newTodo,
+        createdAt: serverTimestamp()
       });
-      
-      setItineraryData(docs); // 更新狀態
-      setLoading(false);      // 結束讀取狀態
-    }, (error) => {
-      console.error("Firestore 即時同步失敗:", error);
+    } catch (e) { console.error("新增待辦失敗:", e); }
+  }, []);
+
+  const handleToggleTodo = useCallback(async (todoId, memberName, isDone) => {
+    try {
+      const todoRef = doc(db, "todos", todoId);
+      await updateDoc(todoRef, {
+        completedBy: isDone ? arrayUnion(memberName) : arrayRemove(memberName)
+      });
+    } catch (e) { console.error("更新狀態失敗:", e); }
+  }, []);
+
+  const handleDeleteTodo = useCallback(async (todoId) => {
+    try {
+      await deleteDoc(doc(db, "todos", todoId));
+    } catch (e) { console.error("刪除失敗:", e); }
+  }, []);
+
+  const handleAddShopping = useCallback(async (newItem) => {
+    try {
+      await addDoc(collection(db, "shopping"), {
+        ...newItem,
+        completed: false,
+        completedBy: null,
+        createdAt: serverTimestamp()
+      });
+    } catch (e) { console.error(e); }
+  }, []);
+
+  const handleToggleShopping = useCallback(async (id, memberName, isCompleted) => {
+    try {
+      await updateDoc(doc(db, "shopping", id), {
+        completed: isCompleted,
+        completedBy: isCompleted ? memberName : null
+      });
+    } catch (e) { console.error(e); }
+  }, []);
+
+  // --- Firebase 即時監聽 (useEffect) ---
+
+  useEffect(() => {
+    // 監聽行程
+    const qItinerary = query(collection(db, "itinerary"), orderBy("date", "asc"));
+    const unsubItinerary = onSnapshot(qItinerary, (snap) => {
+      setItineraryData(snap.docs.map(d => ({ id: d.id, ...d.data() })));
       setLoading(false);
     });
 
-    return () => unsubscribe(); 
+    // 監聽待辦
+    const qTodos = query(collection(db, "todos"), orderBy("createdAt", "desc"));
+    const unsubTodos = onSnapshot(qTodos, (snap) => {
+      setTodos(snap.docs.map(d => ({ firestoreId: d.id, ...d.data() })));
+    });
+
+    // 監聽購物清單
+    const qShopping = query(collection(db, "shopping"), orderBy("createdAt", "desc"));
+    const unsubShopping = onSnapshot(qShopping, (snap) => {
+      setShoppingList(snap.docs.map(d => ({ firestoreId: d.id, ...d.data() })));
+    });
+
+    // 監聽日誌
+    const qJournal = query(collection(db, "journal"), orderBy("createdAt", "desc"));
+    const unsubJournal = onSnapshot(qJournal, (snap) => {
+      setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    // 監聽成員
+    const qMembers = query(collection(db, "members"));
+    const unsubMembers = onSnapshot(qMembers, (snap) => {
+      setMembers(snap.docs.map(d => ({ ...d.data(), firestoreId: d.id })));
+    });
+
+    // Cleanup: 組件卸載時取消所有監聽
+    return () => {
+      unsubItinerary();
+      unsubTodos();
+      unsubShopping();
+      unsubJournal();
+      unsubMembers();
+    };
   }, []);
 
- const handleAddMember = async (newMember) => {
-    const { addDoc, collection } = await import("firebase/firestore");
-    try {
-      // 確保將資料寫入 Firestore 的 members 集合
-      await addDoc(collection(db, "members"), newMember);
-    } catch (e) {
-      console.error("新增成員失敗:", e);
-      alert("新增失敗，請檢查網路連線");
-    }
-  };
-  const handleAddPost = async (newPost) => {
-  const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
-  try {
-    // 將日誌資料寫入 Firestore 的 journal 集合
-    await addDoc(collection(db, "journal"), {
-      ...newPost,
-      createdAt: serverTimestamp() // 使用伺服器時間，確保所有人手機看到的排序一致
-    });
-  } catch (e) {
-    console.error("日誌發布至雲端失敗:", e);
-    alert("發布失敗，請檢查網路連線");
-  }
-};
-  const handleDeleteMember = async (firestoreId) => {
-    if (!window.confirm("確定要移除這位成員嗎？")) return;
-    const { doc, deleteDoc } = await import("firebase/firestore");
-    try {
-      await deleteDoc(doc(db, "members", firestoreId));
-    } catch (e) {
-      console.error("刪除失敗:", e);
-    }
-  };
- const uploadMembersToCloud = async () => {
-  const { doc, setDoc, collection } = await import("firebase/firestore");
-  try {
-    for (const m of membersData) {
-      // 使用 id 作為文件 ID 避免重複
-      await setDoc(doc(db, "members", m.id.toString()), m);
-    }
-    alert("✅ 初始成員資料已同步至雲端！");
-  } catch (e) {
-    console.error(e);
-  }
-};
+  // --- Memoized Values ---
+  const flightDates = useMemo(() => {
+    const dates = [...new Set(bookings
+      .filter(b => b.category.includes('機票'))
+      .map(f => f.category.match(/\d{2}\/\d{2}/)?.[0])
+    )].filter(Boolean);
+    return dates.sort((a, b) => a.startsWith('12') ? -1 : 1);
+  }, [bookings]);
+
   useEffect(() => {
-  // 🟢 監聽成員資料
-  const qMembers = query(collection(db, "members"));
-  const unsubscribeMembers = onSnapshot(qMembers, (snapshot) => {
-    if (!snapshot.empty) {
-      const mList = [];
-      snapshot.forEach((doc) => {
-        mList.push({ ...doc.data(), firestoreId: doc.id });
-      });
-      setMembers(mList);
-    }
-  }, (error) => {
-    console.error("成員同步失敗:", error);
-  });
+    if (flightDates.length > 0 && !selectedDate) setSelectedDate(flightDates[0]);
+  }, [flightDates, selectedDate]);
 
-  return () => unsubscribeMembers();
-}, []);
-
-useEffect(() => {
-  // 建立對 journal 集合的監聽，並按時間由新到舊排序
-  const qJournal = query(collection(db, "journal"), orderBy("createdAt", "desc"));
-  
-  const unsubscribeJournal = onSnapshot(qJournal, (snapshot) => {
-    const pList = [];
-    snapshot.forEach((doc) => {
-      pList.push({ id: doc.id, ...doc.data() });
-    });
-    setPosts(pList); // 更新日誌列表狀態
-  }, (error) => {
-    console.error("日誌同步失敗:", error);
-  });
-
-  return () => unsubscribeJournal();
-}, []);
-
-useEffect(() => {
-  const qTodos = query(collection(db, "todos"), orderBy("createdAt", "desc"));
-  const unsubscribeTodos = onSnapshot(qTodos, (snapshot) => {
-    const tList = snapshot.docs.map(doc => ({ 
-      firestoreId: doc.id, // 這是關鍵，用來識別要更新哪一張卡片
-      ...doc.data() 
-    }));
-    setTodos(tList);
-  });
-  return () => unsubscribeTodos();
-}, []);
-
-  // 1. 提取航班日期的邏輯
-const flightDates = useMemo(() => {
-  const dates = [...new Set(bookings
-    .filter(b => b.category.includes('機票'))
-    .map(f => f.category.match(/\d{2}\/\d{2}/)?.[0])
-  )].filter(Boolean);
-  return dates.sort((a, b) => a.startsWith('12') ? -1 : 1);
-}, [bookings]);
-
-// 2. 另外使用 useEffect 設定初始選中日期
-useEffect(() => {
-  if (flightDates.length > 0 && !selectedDate) {
-    setSelectedDate(flightDates[0]);
-  }
-}, [flightDates]);
-
-useEffect(() => {
-  const qShopping = query(collection(db, "shopping"), orderBy("createdAt", "desc"));
-  const unsubscribeShopping = onSnapshot(qShopping, (snapshot) => {
-    setShoppingList(snapshot.docs.map(doc => ({ firestoreId: doc.id, ...doc.data() })));
-  });
-  return () => unsubscribeShopping();
-}, []);
-
- 
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F8F9FA]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4E9A8E] mx-auto mb-4"></div>
-          <p className="font-black italic text-gray-400 uppercase tracking-widest">Loading Ski Data...</p>
-        </div>
-      </div>
-    );
-  }
-
+  // --- Render Logic ---
+  if (loading) return <div className="loading-screen">...</div>;
 
   return (
     <div className="min-h-screen bg-[#F8F7F2] text-[#2A3B49] pb-32 font-sans antialiased">
@@ -260,7 +149,7 @@ useEffect(() => {
     <div className="flex -space-x-2">
   {members && members.length > 0 && members.map((m, idx) => (
     <img 
-      key={m.firestoreId || m.id || idx} 
+      key={m.firestoreId || `member-${idx}`} 
       src={m.avatar} 
       className="w-8 h-8 rounded-full border-2 border-white shadow-sm bg-white" 
       alt={m.name} 
