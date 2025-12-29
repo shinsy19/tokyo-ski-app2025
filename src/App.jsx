@@ -60,15 +60,16 @@ export default function App() {
   }, []);
 
   const handleAddShopping = useCallback(async (newItem) => {
-    try {
-      await addDoc(collection(db, "shopping"), {
-        ...newItem,
-        completed: false,
-        completedBy: null,
-        createdAt: serverTimestamp()
-      });
-    } catch (e) { console.error(e); }
-  }, []);
+  try {
+    await addDoc(collection(db, "shopping"), {
+      ...newItem,
+      category: newItem.category || "未分類", // 確保有分類標籤
+      completed: false,
+      completedBy: null,
+      createdAt: serverTimestamp()
+    });
+  } catch (e) { console.error(e); }
+}, []);
 
   const handleToggleShopping = useCallback(async (id, memberName, isCompleted) => {
     try {

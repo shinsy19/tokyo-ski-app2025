@@ -51,6 +51,7 @@ export default function PlanningPage({
 }) {
   const [activeTab, setActiveTab] = useState('待辦');
   const [selectedAssignee, setSelectedAssignee] = useState('全體');
+  const [shopFilter, setShopFilter] = useState('全部');
   const [newItemName, setNewItemName] = useState("");
 
   const [items, setItems] = useState(() => {
@@ -122,6 +123,15 @@ export default function PlanningPage({
     }).sort((a, b) => a.isCompleted - b.isCompleted);
   }, [items, activeTab, selectedAssignee, members]);
 
+  const shopCategories = useMemo(() => {
+  return ['全部', ...new Set(shoppingList.map(item => item.category || '未分類'))];
+}, [shoppingList]);
+
+const filteredShoppingList = useMemo(() => {
+  if (shopFilter === '全部') return shoppingList;
+  return shoppingList.filter(item => (item.category || '未分類') === shopFilter);
+}, [shoppingList, shopFilter]);
+
   return (
     <div className="max-w-md mx-auto pb-24 animate-in fade-in">
       {/* 分類切換 */}
@@ -150,6 +160,34 @@ export default function PlanningPage({
           />
         </div>
       ) : activeTab === '購物清單' ? (
+        <div className="mt-4">
+    {/* 3. 新增：分類標籤按鈕列 */}
+    <div className="flex gap-2 overflow-x-auto px-6 mb-4 no-scrollbar">
+      {shopCategories.map(cat => (
+        <button
+          key={cat}
+          onClick={() => setShopFilter(cat)}
+          className={`flex-none px-4 py-1.5 rounded-xl text-[10px] font-black border transition-all ${
+            shopFilter === cat 
+            ? 'bg-[#CC8F46] text-white border-[#CC8F46] shadow-sm' 
+            : 'bg-white text-gray-400 border-gray-100'
+          }`}
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    {/* 4. 修改：傳入 filteredShoppingList */}
+    <ShoppingPage 
+      members={members} 
+      items={filteredShoppingList} 
+      onAdd={onAddShopping} 
+      onToggle={onToggleShopping} 
+      onDelete={onDeleteShopping} 
+    />
+  </div>
+) : (
         <ShoppingPage 
           members={members} 
           items={shoppingList} 

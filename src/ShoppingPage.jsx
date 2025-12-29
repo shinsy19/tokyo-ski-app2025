@@ -5,6 +5,12 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
   const [showAdd, setShowAdd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [lightboxImg, setLightboxImg] = useState(null); 
+  const [filterTag, setFilterTag] = useState('全部');
+  const allTags = ['全部', ...new Set(items.flatMap(item => item.subItems || []))];
+  const filteredItems = filterTag === '全部' 
+  ? items 
+  : items.filter(item => item.subItems?.includes(filterTag));
+
   
   const [newItem, setNewItem] = useState({
     title: '',
@@ -78,6 +84,24 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
         {showAdd ? '取消新增' : '新增購物項目'}
       </button>
 
+      {!showAdd && (
+  <div className="flex gap-2 overflow-x-auto py-2 no-scrollbar">
+    {allTags.map(tag => (
+      <button
+        key={tag}
+        onClick={() => setFilterTag(tag)}
+        className={`flex-none px-4 py-1.5 rounded-xl text-[10px] font-black border transition-all ${
+          filterTag === tag 
+          ? 'bg-[#CC8F46] text-white border-[#CC8F46] shadow-md' 
+          : 'bg-white text-gray-400 border-gray-100'
+        }`}
+      >
+        {tag}
+      </button>
+    ))}
+  </div>
+)}
+
       {/* 3. 新增面板 */}
       {showAdd && (
         <div className="bg-white p-6 rounded-[2.5rem] shadow-xl border-2 border-[#76B352] space-y-4 animate-in slide-in-from-top">
@@ -100,7 +124,7 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
           <textarea placeholder="備註 (細節說明...)" className="w-full p-4 bg-gray-50 rounded-xl font-medium text-sm h-20 outline-none" value={newItem.note} onChange={e => setNewItem({...newItem, note: e.target.value})} />
 
           <div>
-            <p className="text-[10px] font-black opacity-30 uppercase ml-2 mb-2">細節標籤 (如：尺寸、顏色)</p>
+            <p className="text-[10px] font-black opacity-30 uppercase ml-2 mb-2">分類標籤 (如：3COINS, mont-bell, 藥妝)</p>
             <div className="flex gap-2">
               <input 
                 type="text" 
@@ -133,7 +157,7 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
 
       {/* 4. 清單顯示 */}
       <div className="grid gap-4">
-        {items.map((item) => (
+        {filteredItems.map((item) => (
           <div key={item.firestoreId} className={`bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 transition-all ${item.completed ? 'grayscale opacity-50 bg-gray-50' : ''}`}>
             <div className="flex p-4 gap-4">
               <div className="relative group cursor-zoom-in" onClick={() => item.image && setLightboxImg(item.image)}>
