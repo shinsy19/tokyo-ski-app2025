@@ -158,29 +158,42 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
       {/* 4. 清單顯示 */}
       <div className="grid gap-4">
         {filteredItems.map((item) => (
-          <div key={item.firestoreId} className={`bg-white rounded-[2rem] overflow-hidden shadow-sm border border-gray-100 transition-all ${item.completed ? 'grayscale opacity-50 bg-gray-50' : ''}`}>
-            <div className="flex p-4 gap-4">
-              <div className="relative group cursor-zoom-in" onClick={() => item.image && setLightboxImg(item.image)}>
-                <img src={item.image || 'https://via.placeholder.com/150?text=No+Img'} className="w-24 h-24 rounded-2xl object-cover bg-gray-50 flex-none" alt="" />
-                {item.image && <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl"><ZoomIn className="text-white" size={20}/></div>}
-              </div>
+          <div key={item.firestoreId} className={`card mb-8 transition-all relative ${item.completed ? 'opacity-80' : ''}`}>
+    {/* 模擬 PDF 中的紙膠帶貼飾 */}
+    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-[#CC8F46]/30 shadow-sm z-10 rotate-2"></div>
+    
+    <div className="flex p-5 gap-4">
+      {/* 照片區：套用 App.css 中的 photo-frame */}
+      <div 
+        className="photo-frame flex-none w-28 h-28 cursor-zoom-in overflow-hidden" 
+        onClick={() => item.image && setLightboxImg(item.image)}
+      >
+        <img 
+          src={item.image || 'https://via.placeholder.com/150?text=No+Img'} 
+          className="w-full h-full object-cover" 
+          alt="商品圖" 
+        />
+      </div>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-start">
-                  <h4 className={`font-black text-lg truncate ${item.completed ? 'line-through text-gray-400' : ''}`}>
-                    {item.title} 
-                    <span className="ml-2 text-xs text-[#CC8F46] font-bold">x {item.quantity}</span>
-                  </h4>
-                  <button onClick={() => onDelete(item.firestoreId)} className="text-red-200 hover:text-red-400"><Trash2 size={16}/></button>
-                </div>
-
-                {item.note && <p className="text-[11px] text-gray-400 mt-1 italic font-medium">{item.note}</p>}
-                
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {item.subItems?.map((s, i) => (
-                    <span key={i} className="text-[9px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md font-bold italic">#{s}</span>
-                  ))}
-                </div>
+      <div className="flex-1 min-w-0 flex flex-col justify-between">
+        <div>
+          <div className="flex justify-between items-start">
+            <h4 className={`font-black text-lg italic tracking-tighter ${item.completed ? 'text-gray-400 line-through' : 'text-[#2A3B49]'}`}>
+              {item.title} 
+              <span className="ml-2 text-xs text-[#CC8F46]">x {item.quantity}</span>
+            </h4>
+            <button onClick={() => onDelete(item.firestoreId)} className="text-red-200 hover:text-red-400">
+              <Trash2 size={16}/>
+            </button>
+          </div>
+          
+          {/* 分類標籤：套用 highlight-note 樣式 */}
+          <div className="flex flex-wrap gap-1 mt-1">
+            {item.subItems?.map((s, i) => (
+              <span key={i} className="highlight-note text-[9px]">#{s}</span>
+            ))}
+          </div>
+        </div>
 
                 <div className="mt-3 flex items-center gap-2">
                   <select 
@@ -194,7 +207,37 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
                     <option value="">誰買了？</option>
                     {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
                   </select>
-                  {item.completed && <span className="text-[10px] font-black text-[#76B352] uppercase italic tracking-widest">Completed</span>}
+                  <div className="mt-3 flex items-center justify-between border-t border-dashed border-gray-100 pt-3">
+  {/* 執行人選擇器 */}
+  <select 
+    className="text-[10px] font-black bg-gray-50 border-none rounded-md p-1 outline-none"
+    value={item.completedBy || ""}
+    onChange={(e) => {
+      const val = e.target.value;
+      onToggle(item.firestoreId, val, val !== "");
+    }}
+  >
+    <option value="">購買人</option>
+    {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
+  </select>
+
+  {/* PDF 風格勾選框 */}
+  <div className="flex items-center gap-1.5">
+    {item.completed ? (
+      <div className="flex items-center gap-1 text-[#76B352] animate-in zoom-in">
+        <div className="w-5 h-5 border-2 border-[#76B352] flex items-center justify-center rounded-sm">
+          <CheckCircle2 size={14} fill="#76B352" color="white" />
+        </div>
+        <span className="text-[10px] font-black italic uppercase tracking-tighter">V 已購買</span>
+      </div>
+    ) : (
+      <div className="flex items-center gap-1 text-gray-300">
+        <div className="w-5 h-5 border-2 border-gray-200 rounded-sm"></div>
+        <span className="text-[10px] font-black italic uppercase tracking-tighter">未購買</span>
+      </div>
+    )}
+  </div>
+</div>
                 </div>
               </div>
             </div>

@@ -217,3 +217,20 @@ nav {
   font-size: 0.9rem;
   border-left: 4px solid var(--accent-brown);
 }
+
+/* 強化購物清單專屬卡片感 */
+.card {
+  position: relative;
+  background: white;
+  border: 1.5px solid #333;
+  box-shadow: 5px 5px 0px 0px rgba(0,0,0,0.05); /* 硬陰影模擬紙張厚度 */
+}
+
+/* 拍立得照片邊框 */
+.photo-frame {
+  background: white;
+  padding: 6px 6px 16px 6px; /* 底部留白多一點 */
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transform: rotate(-2deg); /* 隨機旋轉感 */
+}
