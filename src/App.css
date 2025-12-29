@@ -1,21 +1,19 @@
 /* 1. 基礎重設與背景紋理 */
 :root {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  background-color: #F8F7F2; /* 淺米色背景，模擬紙張感 */
+  /* 根據 PDF 提取的配色清單 */
+  --paper-bg: #F8F4EF;        /* 更溫暖的紙張色  */
+  --accent-brown: #8B4513;    /* 標題焦糖棕 [cite: 219] */
+  --accent-blue: #2A3B49;     /* 導覽深藍灰 [cite: 196] */
+  --highlight-yellow: #fef08a; /* 螢光筆高亮 [cite: 8] */
+  --border-color: #333333;    /* 類手繪黑線 */
 }
 
 #root {
-  max-width: 480px; /* 鎖定手機寬度，模擬 App 畫面 */
-  margin: 0 auto;
-  min-h-screen: 100vh;
-  padding: 0;
-  text-align: left; /* 改為靠左對齊，方便閱讀行程 */
-  
-  /* 加入點狀背景紋理 */
-  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-color: var(--paper-bg);
+  /* 強化網格感，模擬手帳內頁 */
+  background-image: 
+    linear-gradient(90deg, rgba(229, 231, 235, 0.5) 1px, transparent 1px),
+    linear-gradient(rgba(229, 231, 235, 0.5) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -37,15 +35,27 @@ h1, h2, .ticket-title {
 
 /* 3. 卡片設計優化 */
 .card {
-  background: white;
-  border-radius: 2.5rem; /* 大圓角設計 */
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
+  background: #fff;
+  border-radius: 4px; /* 減小圓角，更像洗出來的照片或剪貼紙張  */
+  border: 1.5px solid var(--border-color); /* 加入手繪邊框感 */
+  box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.1); /* 改用硬陰影，模擬紙張層疊 */
+  position: relative;
+  overflow: visible; /* 為了讓紙膠帶元件溢出 */
 }
 
+/* 模擬 PDF 中的迴紋針或紙膠帶效果 [cite: 216] */
+.card::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 20px;
+  background-color: rgba(139, 69, 19, 0.3); /* 半透明棕色紙膠帶 */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  z-index: 10;
+}
 .card:active {
   transform: scale(0.98); /* 點擊時的縮放反饋 */
 }
@@ -69,4 +79,141 @@ nav {
 .logo {
   height: 3em;
   padding: 1em;
+}
+
+.itinerary-timeline {
+  border-left: 2px solid var(--accent-brown); /* 垂直主軸 [cite: 16] */
+  margin-left: 20px;
+  padding-left: 15px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -22px;
+  top: 5px;
+  width: 12px;
+  height: 12px;
+  background-color: var(--accent-brown);
+  border-radius: 50%; /* 模擬 PDF 上的圓點標記 [cite: 5] */
+}
+
+.ticket-info {
+  border: 2px dashed var(--accent-blue); /* 虛線剪割線 [cite: 230] */
+  padding: 15px;
+  background: #fff;
+  font-family: 'Courier New', Courier, monospace; /* 模擬機票噴墨字體 */
+}
+
+.flight-number {
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: var(--accent-brown);
+  border-bottom: 2px solid var(--accent-brown); /* 底部標記線 [cite: 113] */
+}
+
+.location-header {
+  font-size: 2.5rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.8rem; /* 極寬字距還原 [cite: 227] */
+  color: var(--accent-brown);
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.photo-frame {
+  background: white;
+  padding: 8px 8px 24px 8px; /* 底部留白較多，模擬拍立得 */
+  border: 1px solid #ddd;
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
+  transform: rotate(-1.5deg); /* 輕微旋轉增加手作感 */
+  margin: 10px;
+}
+
+.ticket-info {
+  position: relative;
+  /* ...現有樣式... */
+}
+
+/* 模擬票券側邊的凹槽 */
+.ticket-info::after, .ticket-info::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: var(--paper-bg); /* 與背景色相同，達成挖空視覺 */
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.ticket-info::before { left: -12px; }
+.ticket-info::after { right: -12px; }
+
+/* 滑雪場卡片專屬風格 */
+.ski-resort-card {
+  padding: 20px;
+  background: linear-gradient(to bottom, #ffffff, #f0f7f9); /* 淡淡的雪地漸層 */
+}
+
+.resort-jp-name {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--accent-blue);
+  margin-top: -1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+}
+
+.resort-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5rem;
+  border-top: 1px dashed var(--accent-blue);
+  border-bottom: 1px dashed var(--accent-blue);
+  padding: 10px 0;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--accent-brown);
+}
+
+/* 難度比例條樣式 [cite: 426] */
+.difficulty-bar {
+  display: flex;
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1rem 0;
+  font-size: 0.7rem;
+  color: white;
+  line-height: 24px;
+  text-align: center;
+}
+
+.diff-level.green { background-color: #4CAF50; } /* 初級 [cite: 411] */
+.diff-level.red { background-color: #F44336; }   /* 中級 [cite: 415] */
+.diff-level.black { background-color: #222; }     /* 高級 [cite: 417] */
+
+.food-tip {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  border-left: 4px solid var(--accent-brown);
 }
