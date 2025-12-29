@@ -79,6 +79,18 @@ export default function App() {
     } catch (e) { console.error(e); }
   }, []);
 
+  const uploadMembersToCloud = async () => {
+    const { doc, setDoc } = await import("firebase/firestore");
+    try {
+      for (const m of membersData) {
+        await setDoc(doc(db, "members", m.id.toString()), m);
+      }
+      alert("✅ 初始成員資料已同步至雲端！");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   // --- Firebase 即時監聽 (useEffect) ---
 
   useEffect(() => {
@@ -139,9 +151,7 @@ export default function App() {
   // --- Render Logic ---
   if (loading) return <div className="loading-screen">...</div>;
 
-  <button onClick={uploadMembersToCloud} className="fixed top-20 right-4 z-[100] bg-red-500 text-white p-2">
-  同步成員到雲端
-</button>
+  
 
   return (
     <div className="min-h-screen bg-[#F8F7F2] text-[#2A3B49] pb-32 font-sans antialiased">
@@ -161,6 +171,10 @@ export default function App() {
   ))}
 </div>
 </header>
+
+<button onClick={uploadMembersToCloud} className="fixed top-20 right-4 z-[100] bg-red-500 text-white p-2">
+  同步成員到雲端
+</button>
 
       {tab === 'schedule' && (
   <main className="max-w-md mx-auto animate-in fade-in">
