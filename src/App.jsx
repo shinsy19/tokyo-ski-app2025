@@ -205,9 +205,6 @@ export default function App() {
 </div>
 </header>
 
-<button onClick={uploadMembersToCloud} className="fixed top-20 right-4 z-[100] bg-red-500 text-white p-2">
-  同步成員到雲端
-</button>
 
       {tab === 'schedule' && (
   <main className="max-w-md mx-auto animate-in fade-in">
