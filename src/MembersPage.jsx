@@ -84,12 +84,16 @@ export default function MembersPage({ members, onAdd, onDelete }) {
               {m.name}
             </span>
             <button 
-  onClick={() => onDelete(m.firestoreId)} // 👈 觸發刪除函數
-  className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-red-400 hover:text-red-600 hover:scale-110 transition-all shadow-sm"
-  title="移除成員"
->
-  <Trash2 size={14} />
-</button>
+              onClick={() => {
+                // 優先使用雲端的 firestoreId，若無則回退至本地 id
+                const targetId = m.firestoreId || m.id;
+                onDelete(targetId);
+              }}
+              className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-red-400 hover:text-red-600 hover:scale-110 transition-all shadow-sm border border-red-50"
+              title="移除成員"
+            >
+              <Trash2 size={14} />
+            </button>
           </div>
         ))}
       </div>

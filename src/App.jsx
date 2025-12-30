@@ -114,16 +114,20 @@ export default function App() {
 
   const handleAddMember = useCallback(async (newMember) => {
     try {
-      await addDoc(collection(db, "members"), newMember);
-    } catch (e) { console.error("新增成員失敗:", e); }
-  }, []);
+        await addDoc(collection(db, "members"), newMember);
+    } catch (e) {
+        console.error("新增成員失敗:", e);
+    }
+}, []);
 
-  const handleDeleteMember = useCallback(async (id) => {
-    if (!window.confirm("確定移除？")) return;
+const handleDeleteMember = useCallback(async (id) => {
+    if (!window.confirm("確定移除此成員？")) return;
     try {
-      await deleteDoc(doc(db, "members", id));
-    } catch (e) { console.error("刪除成員失敗:", e); }
-  }, []);
+        await deleteDoc(doc(db, "members", id));
+    } catch (e) {
+        console.error("刪除成員失敗:", e);
+    }
+}, []);
 
   // --- Firebase 即時監聽 (useEffect) ---
 
