@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Camera, X, CheckCircle2, Circle, ZoomIn } from 'lucide-react';
+// 補上 Edit3 圖示
+import { Plus, Trash2, Camera, X, CheckCircle2, Circle, ZoomIn, Edit3 } from 'lucide-react';
 
-export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members }) {
+// 在參數列補上 onUpdate
+export default function ShoppingPage({ items, onAdd, onToggle, onUpdate, onDelete, members }) {
   const [showAdd, setShowAdd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [lightboxImg, setLightboxImg] = useState(null); 
   const [filterTag, setFilterTag] = useState('全部');
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editSubItems, setEditSubItems] = useState([]);
+  const [tempEditSubItem, setTempEditSubItem] = useState('');
   const allTags = ['全部', ...new Set(items.flatMap(item => item.subItems || []))];
   const filteredItems = filterTag === '全部' 
   ? items 
@@ -64,6 +70,15 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
     setNewItem({ title: '', quantity: 1, image: '', note: '', subItems: [], category: '一般' });
     setShowAdd(false);
   };
+
+  const handleUpdateSubmit = (id) => {
+    if (!editTitle.trim()) return;
+    onUpdate(id, { 
+      title: editTitle, 
+      subItems: editSubItems 
+    });
+    setEditingId(null);
+  };
 
   return (
     <div className="space-y-4 px-4 pb-24">
@@ -175,75 +190,102 @@ export default function ShoppingPage({ items, onAdd, onToggle, onDelete, members
         />
       </div>
 
-      <div className="flex-1 min-w-0 flex flex-col justify-between">
-        <div>
-          <div className="flex justify-between items-start">
-            <h4 className={`font-black text-lg italic tracking-tighter ${item.completed ? 'text-gray-400 line-through' : 'text-[#2A3B49]'}`}>
-              {item.title} 
-              <span className="ml-2 text-xs text-[#CC8F46]">x {item.quantity}</span>
-            </h4>
-            <button onClick={() => onDelete(item.firestoreId)} className="text-red-200 hover:text-red-400">
-              <Trash2 size={16}/>
-            </button>
-          </div>
-          
-          {/* 分類標籤：套用 highlight-note 樣式 */}
-          <div className="flex flex-wrap gap-1 mt-1">
-            {item.subItems?.map((s, i) => (
-              <span key={i} className="highlight-note text-[9px]">#{s}</span>
-            ))}
-          </div>
-        </div>
-
-                <div className="mt-3 flex items-center gap-2">
-                  <select 
-                    className={`text-[10px] font-black border-none rounded-lg p-1 ${item.completed ? 'bg-[#76B352] text-white' : 'bg-gray-100 text-gray-400'}`}
-                    value={item.completedBy || ""}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      onToggle(item.firestoreId, val, val !== "");
-                    }}
-                  >
-                    <option value="">誰買了？</option>
-                    {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
-                  </select>
-                  <div className="mt-3 flex items-center justify-between border-t border-dashed border-gray-100 pt-3">
-  {/* 執行人選擇器 */}
-  <select 
-    className="text-[10px] font-black bg-gray-50 border-none rounded-md p-1 outline-none"
-    value={item.completedBy || ""}
-    onChange={(e) => {
-      const val = e.target.value;
-      onToggle(item.firestoreId, val, val !== "");
-    }}
-  >
-    <option value="">購買人</option>
-    {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
-  </select>
-
-  {/* PDF 風格勾選框 */}
-  <div className="flex items-center gap-1.5">
-    {item.completed ? (
-      <div className="flex items-center gap-1 text-[#76B352] animate-in zoom-in">
-        <div className="w-5 h-5 border-2 border-[#76B352] flex items-center justify-center rounded-sm">
-          <CheckCircle2 size={14} fill="#76B352" color="white" />
-        </div>
-        <span className="text-[10px] font-black italic uppercase tracking-tighter">V 已購買</span>
-      </div>
-    ) : (
-      <div className="flex items-center gap-1 text-gray-300">
-        <div className="w-5 h-5 border-2 border-gray-200 rounded-sm"></div>
-        <span className="text-[10px] font-black italic uppercase tracking-tighter">未購買</span>
-      </div>
-    )}
-  </div>
-</div>
-                </div>
-              </div>
+      {editingId === item.firestoreId ? (
+          <div className="space-y-3 animate-in fade-in">
+            <input 
+              className="w-full text-sm font-bold border-b-2 border-[#CC8F46] outline-none bg-orange-50/30 px-2 py-1" 
+              value={editTitle} 
+              onChange={e => setEditTitle(e.target.value)} 
+            />
+            <div className="flex gap-1 flex-wrap">
+              {editSubItems.map((s, i) => (
+                <span key={i} className="text-[9px] bg-[#76B352]/10 text-[#76B352] px-2 py-1 rounded-full flex items-center gap-1 font-bold">
+                  #{s} <X size={10} className="cursor-pointer" onClick={() => setEditSubItems(editSubItems.filter((_, idx) => idx !== i))} />
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-2 items-center">
+              <input 
+                placeholder="新增標籤..." 
+                className="text-[10px] border-b border-gray-200 outline-none w-20"
+                value={tempEditSubItem}
+                onChange={e => setTempEditSubItem(e.target.value)}
+                onKeyDown={e => {
+                  if(e.key === 'Enter') {
+                    setEditSubItems([...editSubItems, tempEditSubItem]);
+                    setTempEditSubItem('');
+                  }
+                }}
+              />
+              <button onClick={() => handleUpdateSubmit(item.firestoreId)} className="text-[10px] font-black text-[#76B352] bg-[#76B352]/10 px-3 py-1 rounded-lg">儲存</button>
+              <button onClick={() => setEditingId(null)} className="text-[10px] font-black text-gray-300">取消</button>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  );
+        ) : (
+          
+            <div className="flex flex-col gap-1 flex-1 min-w-0">
+  <div className="flex justify-between items-start w-full gap-2">
+    <h4 className={`font-black text-xl italic tracking-tighter whitespace-nowrap overflow-hidden text-ellipsis flex-1 ${item.completed ? 'text-gray-400 line-through' : 'text-[#2A3B49]'}`}>
+      {item.title} 
+      <span className="ml-2 text-sm text-[#CC8F46] not-italic">x{item.quantity}</span>
+    </h4>
+              <div className="flex gap-2">
+                <button onClick={() => {
+                  setEditingId(item.firestoreId);
+                  setEditTitle(item.title);
+                  setEditSubItems(item.subItems || []);
+                }} className="text-gray-300 hover:text-[#4E9A8E] transition-colors">
+                  <Edit3 size={16} /> {/* 請確保頂部有 import { Edit3 } */}
+                </button>
+                <button onClick={() => onDelete(item.firestoreId)} className="text-red-200 hover:text-red-400">
+                  <Trash2 size={16}/>
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {item.subItems?.map((s, i) => (
+                <span key={i} className="highlight-note text-[9px]">#{s}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+                {/* 5. 購買狀態 UI 區區塊 */}
+            <div className="mt-3 flex items-center justify-between border-t border-dashed border-gray-100 pt-3">
+              {/* 購買人選擇器 */}
+              <select 
+                className={`text-[10px] font-black border-none rounded-lg p-1 ${item.completed ? 'bg-[#76B352] text-white' : 'bg-gray-100 text-gray-400'}`}
+                value={item.completedBy || ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  onToggle(item.firestoreId, val, val !== "");
+                }}
+              >
+                <option value="">購買人</option>
+                {members.map(m => <option key={m.firestoreId || m.id} value={m.name}>{m.name}</option>)}
+              </select>
+
+              {/* PDF 風格勾選框 */}
+              <div className="flex items-center gap-1.5">
+                {item.completed ? (
+                  <div className="flex items-center gap-1 text-[#76B352] animate-in zoom-in">
+                    <div className="w-5 h-5 border-2 border-[#76B352] flex items-center justify-center rounded-sm">
+                      <CheckCircle2 size={14} fill="#76B352" color="white" />
+                    </div>
+                    <span className="text-[10px] font-black italic uppercase tracking-tighter">V 已購買</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1 text-gray-300">
+                    <div className="w-5 h-5 border-2 border-gray-200 rounded-sm"></div>
+                    <span className="text-[10px] font-black italic uppercase tracking-tighter">未購買</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div> 
+        </div> 
+    ))}
+  </div>
+</div>
+);
 }

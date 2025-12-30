@@ -92,11 +92,16 @@ export default function App() {
     }
   };
 
-  const handleUpdateTodo = useCallback(async (todoId, updates) => {
+  const handleUpdateTodo = useCallback(async (todoId, memberName, isAdding) => {
     try {
       const todoRef = doc(db, "todos", todoId);
-      await updateDoc(todoRef, updates);
-    } catch (e) { console.error("更新代辦失敗:", e); }
+      // 使用 updates 物件來決定是新增還是移除指定人員
+      await updateDoc(todoRef, {
+        assignees: isAdding ? arrayUnion(memberName) : arrayRemove(memberName)
+      });
+    } catch (e) { 
+      console.error("更新指定人員失敗:", e); 
+    }
   }, []);
 
   const handleDeleteShopping = useCallback(async (itemId) => {
@@ -104,6 +109,15 @@ export default function App() {
       const itemRef = doc(db, "shopping", itemId);
       await deleteDoc(itemRef);
     } catch (e) { console.error("刪除購物項目失敗:", e); }
+  }, []);
+
+  const handleUpdateShopping = useCallback(async (itemId, updates) => {
+    try {
+      const itemRef = doc(db, "shopping", itemId);
+      await updateDoc(itemRef, updates);
+    } catch (e) { 
+      console.error("更新購物清單失敗:", e); 
+    }
   }, []);
 
   const handleAddPost = useCallback(async (newPost) => {
@@ -545,6 +559,7 @@ const handleDeleteMember = useCallback(async (id) => {
       onDeleteTodo={handleDeleteTodo}
       onAddShopping={handleAddShopping}
       onToggleShopping={handleToggleShopping}
+      onUpdateShopping={handleUpdateShopping}
       onDeleteShopping={handleDeleteShopping} // 🟢 補上這一行
     />
   )

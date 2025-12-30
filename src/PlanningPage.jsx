@@ -192,7 +192,9 @@ const filteredShoppingList = useMemo(() => {
           <div className="flex gap-2 overflow-x-auto px-6 py-4 no-scrollbar">
             <button 
               onClick={() => setSelectedAssignee('全體')} 
-              className={`flex-none px-4 py-2 rounded-xl text-[10px] font-black border ${selectedAssignee === '全體' ? 'bg-[#2A3B49] text-white' : 'bg-white text-gray-400'}`}
+              className={`flex-none px-4 py-2 rounded-xl text-[10px] font-black border ${
+                selectedAssignee === '全體' ? 'bg-[#2A3B49] text-white' : 'bg-white text-gray-400'
+              }`}
             >
               全體進度
             </button>

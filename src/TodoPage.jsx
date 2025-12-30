@@ -43,6 +43,20 @@ export default function TodoPage({ todos, members, onAddTodo, onToggleTodo, onUp
     }
   };
 
+  // 🟢 處理「新增後」的人員指派修改
+  const handleToggleMemberAssignment = (todoId, memberName, currentAssignees) => {
+    const isCurrentlyAssigned = currentAssignees.includes(memberName);
+    
+    // 如果目前只有一個人且就是要移除他，提示無法清空 (或依您的需求調整)
+    if (isCurrentlyAssigned && currentAssignees.length === 1) {
+      if (!window.confirm("這是最後一位負責人，確定要移除嗎？")) return;
+    }
+
+    // 呼叫 App.jsx 的 handleUpdateTodo 邏輯
+    // 注意：這裡的第二與第三個參數需對應您在 App.jsx 修改後的 handleUpdateTodo(todoId, memberName, isAdding)
+    onUpdateTodo(todoId, memberName, !isCurrentlyAssigned);
+  };
+
   // 🟢 修正：刪除原本重複定義的 toggleAssigneeSelection
   const toggleAssigneeSelection = (name) => {
     setSelectedAssignees(prev => 
@@ -89,9 +103,12 @@ export default function TodoPage({ todos, members, onAddTodo, onToggleTodo, onUp
       <div className="space-y-6">
         {todos.map(todo => {
           const targetMembers = todo.assignees.includes("全體") ? members.map(m => m.name) : todo.assignees;
-          const doneList = todo.completedBy || [];
-          const notDoneList = targetMembers.filter(name => !doneList.includes(name));
-          const progress = Math.round((doneList.filter(name => targetMembers.includes(name)).length / targetMembers.length) * 100);
+    const doneList = todo.completedBy || [];
+    const progress = Math.round((doneList.filter(name => targetMembers.includes(name)).length / targetMembers.length) * 100);
+
+    // 接下來直接定義進度過濾邏輯（確保上方沒有出現過重複的 const 名稱）
+    const notDoneList = targetMembers.filter(name => !doneList.includes(name));
+    const activeDoneList = doneList.filter(name => targetMembers.includes(name));
 
           return (
             <div key={todo.firestoreId} className="bg-white rounded-[2.5rem] p-6 shadow-sm border border-gray-100 relative overflow-hidden">
@@ -135,44 +152,90 @@ export default function TodoPage({ todos, members, onAddTodo, onToggleTodo, onUp
               </div>
 
               {/* 分層顯示頭像 */}
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <p className="text-[8px] font-black text-gray-300 uppercase italic">Waiting for:</p>
-                  <div className="flex flex-wrap gap-4">
-                    {notDoneList.map(name => {
-                      const m = members.find(member => member.name === name);
-                      return (
-                        <button key={name} onClick={() => onToggleTodo(todo.firestoreId, name, true)} className="text-center group">
-                          <img src={m?.avatar} className="w-10 h-10 rounded-full border-2 border-gray-100 grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
-                          <p className="text-[8px] font-bold text-gray-400 mt-1">{name}</p>
-                        </button>
-                      );
-                    })}
-                    {notDoneList.length === 0 && <p className="text-[10px] font-bold text-[#4E9A8E] italic">All members done!</p>}
+              <div className="space-y-6 mt-4">
+                {/* A. 待完成區塊 - 顯示誰還沒做 */}
+                {notDoneList.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-[8px] font-black text-gray-300 uppercase italic flex items-center gap-1">
+                      <Circle size={8} className="text-orange-400 fill-orange-400" /> Waiting For ({notDoneList.length})
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {notDoneList.map(name => {
+                        const m = members.find(member => member.name === name);
+                        return (
+                          <button 
+                            key={name} 
+                            onClick={() => onToggleTodo(todo.firestoreId, name, true)} 
+                            className="text-center group transition-transform active:scale-95"
+                          >
+                            <div className="relative">
+                              <img src={m?.avatar} className="w-10 h-10 rounded-full border-2 border-gray-100 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                              <div className="absolute -top-1 -right-1 bg-white rounded-full shadow-sm text-gray-300">
+                                 <Plus size={10} />
+                              </div>
+                            </div>
+                            <p className="text-[8px] font-bold text-gray-400 mt-1">{name}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div className="border-t border-dashed border-gray-100 my-2" />
+                {/* 分隔線：只有兩邊都有人才顯示 */}
+                {notDoneList.length > 0 && activeDoneList.length > 0 && (
+                  <div className="border-t border-dashed border-gray-100 my-2" />
+                )}
 
-                <div className="space-y-2">
-                  <p className="text-[8px] font-black text-[#4E9A8E] uppercase italic">Completed:</p>
-                  <div className="flex flex-wrap gap-4">
-                    {doneList.filter(name => targetMembers.includes(name)).map(name => {
-                      const m = members.find(member => member.name === name);
+                {/* B. 已完成區塊 - 顯示彩色勾勾頭像 */}
+                {activeDoneList.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-[8px] font-black text-[#4E9A8E] uppercase italic flex items-center gap-1">
+                      <CheckCircle2 size={8} className="fill-[#4E9A8E]" /> Completed ({activeDoneList.length})
+                    </p>
+                    <div className="flex flex-wrap gap-4">
+                      {activeDoneList.map(name => {
+                        const m = members.find(member => member.name === name);
+                        return (
+                          <button 
+                            key={name} 
+                            onClick={() => onToggleTodo(todo.firestoreId, name, false)} 
+                            className="text-center relative transition-transform active:scale-95"
+                          >
+                            <div className="relative">
+                              <img src={m?.avatar} className="w-10 h-10 rounded-full border-2 border-[#4E9A8E] shadow-sm" />
+                              <div className="absolute -top-1 -right-1 bg-[#4E9A8E] text-white rounded-full p-0.5 shadow-sm">
+                                <Check size={8} strokeWidth={4} />
+                              </div>
+                            </div>
+                            <p className="text-[8px] font-bold text-[#4E9A8E] mt-1">{name}</p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* C. 管理負責人區塊 - 縮小版用於動態增減人員 */}
+                <div className="pt-4 border-t border-gray-50">
+                  <p className="text-[7px] font-black text-gray-200 uppercase tracking-widest mb-2">指派/取消負責人 (點擊頭像管理):</p>
+                  <div className="flex flex-wrap gap-2">
+                    {members.map(m => {
+                      const isAssigned = todo.assignees.includes(m.name) || todo.assignees.includes("全體");
                       return (
-                        <button key={name} onClick={() => onToggleTodo(todo.firestoreId, name, false)} className="text-center relative">
-                          <img src={m?.avatar} className="w-10 h-10 rounded-full border-2 border-[#4E9A8E]" />
-                          <div className="absolute -top-1 -right-1 bg-[#4E9A8E] text-white rounded-full p-0.5 shadow-sm">
-                            <CheckCircle2 size={10} fill="white" color="#4E9A8E" />
-                          </div>
-                          <p className="text-[8px] font-bold text-[#4E9A8E] mt-1">{name}</p>
+                        <button 
+                          key={m.firestoreId} 
+                          onClick={() => handleToggleMemberAssignment(todo.firestoreId, m.name, todo.assignees)}
+                          className={`w-6 h-6 rounded-full border transition-all ${isAssigned ? 'border-[#4E9A8E] opacity-100' : 'border-transparent opacity-20 grayscale'}`}
+                        >
+                          <img src={m.avatar} className="w-full h-full rounded-full object-cover" alt={m.name} />
                         </button>
                       );
                     })}
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
           );
         })}
       </div>

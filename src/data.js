@@ -406,7 +406,7 @@ export const bookings = [
     terminalNRT: "T1",
     time: "02:25 - 06:30",
     aircraft: "A320neo",
-    baggage: "15kg",
+    baggage: "20kg",
     note: "桃園 T1 出發 / 成田 T1 到達"
   },
   {
