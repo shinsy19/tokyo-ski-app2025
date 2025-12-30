@@ -178,9 +178,9 @@ export default function ShoppingPage({ items, onAdd, onToggle, onUpdate, onDelet
     <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-6 bg-[#CC8F46]/30 shadow-sm z-10 rotate-2"></div>
     
     <div className="flex p-5 gap-4">
-      {/* 照片區：套用 App.css 中的 photo-frame */}
+      {/* 照片區 */}
       <div 
-        className="photo-frame flex-none w-28 h-28 cursor-zoom-in overflow-hidden" 
+        className="photo-frame flex-none w-24 h-24 cursor-zoom-in overflow-hidden" 
         onClick={() => item.image && setLightboxImg(item.image)}
       >
         <img 
@@ -190,7 +190,9 @@ export default function ShoppingPage({ items, onAdd, onToggle, onUpdate, onDelet
         />
       </div>
 
-      {editingId === item.firestoreId ? (
+      {/* 文字內容容器：使用 flex-1 確保佔滿剩餘空間 */}
+      <div className="flex-1 min-w-0 flex flex-col justify-between">
+        {editingId === item.firestoreId ? (
           <div className="space-y-3 animate-in fade-in">
             <input 
               className="w-full text-sm font-bold border-b-2 border-[#CC8F46] outline-none bg-orange-50/30 px-2 py-1" 
@@ -279,11 +281,12 @@ export default function ShoppingPage({ items, onAdd, onToggle, onUpdate, onDelet
                     <div className="w-5 h-5 border-2 border-gray-200 rounded-sm"></div>
                     <span className="text-[10px] font-black italic uppercase tracking-tighter">未購買</span>
                   </div>
-                )}
+               )}
               </div>
             </div>
           </div> 
         </div> 
+      </div> 
     ))}
   </div>
 </div>

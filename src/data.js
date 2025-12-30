@@ -237,7 +237,7 @@ export const itinerary = [
       map: "https://maps.app.goo.gl/xELQbwtQtb4TXGRr5",
       details: { hours: "11:00~21:00", guide: "這裡種類極多，請克制荷包。" }
     },
-    { ma
+    { 
       time: "15:30", title: "澀谷 PARCO / Hun made", type: "spot", 
       note: "🎮 **必買伴手禮**：6F 寶可夢中心、任天堂旗艦店。\n👕 **必買伴手禮**：對面棟 1F Human made。",
       map: "https://maps.app.goo.gl/asNQbTq2vnH17XnLA",
@@ -291,6 +291,7 @@ export const itinerary = [
           note: "⛩️ **重要提醒**：位於豐島區，為當日行程起點。\n📖 **景點故事**：歷史悠久的神社，適合早晨靜心參拜。",
           map: "https://maps.app.goo.gl/FdLbcm9ca3u5V2fh9",
           details: { hours: "09:45-10:30", guide: "參拜完後可步行或搭車前往巢鴨商店街。" }
+          
         },
         { 
           time: "10:30", title: "巢鴨地藏通商店街 (緣日市集)", type: "spot", 
@@ -308,7 +309,6 @@ export const itinerary = [
           details: { hours: "11:30~14:00", food: "和牛壽喜燒", guide: "這間是當地超人氣店，CP 值極高，午餐套餐非常划算。" }
         }
       ]
-  
   },
     {
       name: "A組 (上野採買返台)",
@@ -316,6 +316,7 @@ export const itinerary = [
         { 
           time: "13:30", title: "Seria 上野丸井店", type: "spot", 
           note: "🛒 **必買伴手禮**：日系高品質百元雜貨。\n📍 **地點**：上野丸井百貨內。",
+          map:"https://maps.app.goo.gl/FNFGH85qmcUaMTj97",
           details: { hours: "10:30~20:00", guide: "若有漏買的小禮物，這是最後補貨機會。" }
         },
         { 
@@ -343,6 +344,7 @@ export const itinerary = [
         { 
           time: "16:30", title: "上野丸井百貨 (美妝/生活)", type: "spot", 
           note: "💄 **必買伴手禮**：B1 @cosme、4F Plaza、5F LOFT。\n🛁 **必買伴手禮**：7F Seria 泡澡球。",
+          map:"https://maps.app.goo.gl/FNFGH85qmcUaMTj97",
           details: { hours: "10:30~20:00", guide: "整棟樓集合了所有美妝與雜貨熱點，適合最後衝刺。" }
         },
         { 
@@ -368,7 +370,7 @@ export const itinerary = [
     { 
       time: "09:30", title: "銀座逛街最後衝刺", type: "spot", 
       note: "🛍️ **必買伴手禮**：THE STAND 可麗露、木村屋紅豆麵包、Akebono 水果大福。\n💡 **攻略**：包含 Loft, 無印良品, 伊東屋, Uniqlo。",
-      map: "https://maps.app.goo.gl/P2S4FfTf3fWpX3gU7", // 銀座中心區域
+      map: "https://maps.app.goo.gl/ibv3dk7DG5fqsUj48", // 銀座中心區域
       details: { 
         hours: "10:00~16:30", 
         guide: "逛街順序：1.THE STAND 2.AUX PARADIS(B1) 3.Ginza Loft 4.無印良品 5.伊東屋 6.木村屋 7.Akebono 8.Workman Colors 9.Uniqlo" 
@@ -377,7 +379,7 @@ export const itinerary = [
     { 
       time: "15:30", title: "六厘舍 上野店", type: "food", 
       note: "🍜 **必吃美食**：招牌濃厚沾麵。\n⚠️ **重要提醒**：上車前最後一餐，位於上野車站內。",
-      map: "https://maps.app.goo.gl/nN3J9x9S9x9S9x9S9", 
+      map: "https://maps.app.goo.gl/JBPCsinaAKyzFqsh7", 
       details: { hours: "10:00~23:00", food: "特製沾麵", guide: "吃完後步行 5 分鐘即可抵達京成上野站搭乘 Skyliner。" }
     },
     { 
