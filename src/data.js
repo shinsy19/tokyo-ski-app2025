@@ -228,49 +228,49 @@ export const itinerary = [
     { 
       time: "12:30", title: "SHIBUYA SCRAMBLE SQUARE", type: "spot", 
       note: "🛍️ **必買伴手禮**：1F 治一郎(布丁)、Échiré奶油餅乾、丸山珈琲。\n💄 **攻略**：6F SHIRO 香氛、10F TOKYU HANDS。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG", 
+      map: "https://maps.app.goo.gl/AdsgnJPCcMBQ736F6", 
       details: { hours: "10:00~21:00", food: "治一郎布丁、Échiré餅乾", guide: "1F 是伴手禮戰區，建議先買齊布丁，以免傍晚完售。" }
     },
     { 
       time: "14:30", title: "C-Pla Shibuya (扭蛋)", type: "spot", 
       note: "🧸 **必買伴手禮**：各式最新日本扭蛋。\n📖 **景點故事**：澀谷規模最大的扭蛋專賣店。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG",
+      map: "https://maps.app.goo.gl/xELQbwtQtb4TXGRr5",
       details: { hours: "11:00~21:00", guide: "這裡種類極多，請克制荷包。" }
     },
-    { 
-      time: "15:30", title: "澀谷 PARCO / Human made", type: "spot", 
+    { ma
+      time: "15:30", title: "澀谷 PARCO / Hun made", type: "spot", 
       note: "🎮 **必買伴手禮**：6F 寶可夢中心、任天堂旗艦店。\n👕 **必買伴手禮**：對面棟 1F Human made。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG",
+      map: "https://maps.app.goo.gl/asNQbTq2vnH17XnLA",
       details: { hours: "11:00~21:00", guide: "6F 是動漫迷聖地；Human made 在對面街區，需過馬路。" }
     },
     { 
       time: "16:30", title: "FREAK'S STORE Shibuya", type: "spot", 
       note: "🧥 **必買伴手禮**：美式工裝、潮流選物。\n📖 **景點故事**：日本知名的潮流選品店，版型非常適合台灣人。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG",
+      map: "https://maps.app.goo.gl/i4tK9pVb68JyrvzL8",
       details: { hours: "12:00~20:30", guide: "這區是潮流中心，附近也有許多特色小店。" }
     },
     { 
       time: "17:30", title: "原宿特色美食 (二選一)", type: "food", 
       note: "🍩 **必吃美食**：I’m donut ? 原宿 (生甜甜圈)。\n🥤 **必點菜單**：伊良コーラ (精釀可樂)。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG",
+      map: "https://maps.app.goo.gl/SUVJ2nQCdDY6kKnp7",
       details: { food: "生甜甜圈、精釀可樂", guide: "I'm donut ? 常需排隊，若人潮過多可先買伊良可樂。" }
     },
     { 
       time: "18:00", title: "3COINS 原宿旗艦店", type: "spot", 
       note: "🏠 **必買伴手禮**：原宿限定設計小物、高 CP 值生活用品。\n📖 **景點故事**：3COINS 全日本最大門市，有許多獨家商品。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG",
+      map: "https://maps.app.goo.gl/MrxuZKanM6vAfvmw8",
       details: { hours: "11:00~20:00", guide: "旗艦店有現點現做的餐飲服務，空間非常寬敞。" }
     },
     { 
       time: "19:00", title: "@cosme TOKYO / Beams", type: "spot", 
       note: "💄 **必買伴手禮**：@cosme 美妝排行榜商品。\n🧥 **必買伴手禮**：Beams 日本流行服飾。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG",
+      map: "https://maps.app.goo.gl/qFQymj7bQdaL33Q79",
       details: { hours: "11:00~21:00", guide: "@cosme 就在原宿車站對面，是全日本最強的美妝聖殿。" }
     },
     { 
       time: "20:30", title: "大衆食堂 BEETLE 原宿", type: "food", 
       note: "🥘 **必吃美食**：煮込み(燉內臟)、馬肉刺身。\n⚠️ **重要提醒**：體驗在地日式居酒屋氣氛。",
-      map: "https://maps.app.goo.gl/uXvGvGvGvGvG",
+      map: "https://maps.app.goo.gl/rH8KuuCyjLrPGxKG6",
       details: { hours: "11:00~23:30", food: "燉內臟、生啤酒", guide: "位於原宿巷弄，是逛完街後最好的放鬆地點。" }
     }
    ]
@@ -289,13 +289,13 @@ export const itinerary = [
         { 
           time: "09:20", title: "妙義神社參拜", type: "spot", 
           note: "⛩️ **重要提醒**：位於豐島區，為當日行程起點。\n📖 **景點故事**：歷史悠久的神社，適合早晨靜心參拜。",
-          map: "https://maps.app.goo.gl/myogi_shrine",
+          map: "https://maps.app.goo.gl/FdLbcm9ca3u5V2fh9",
           details: { hours: "09:45-10:30", guide: "參拜完後可步行或搭車前往巢鴨商店街。" }
         },
         { 
           time: "10:30", title: "巢鴨地藏通商店街 (緣日市集)", type: "spot", 
           note: "🏮 **重要提醒**：今日逢4，為『緣日』市集，攤位眾多！\n🍡 **必吃美食**：千成銅鑼燒(鹽奶油)、塩大福、日式拔絲地瓜。\n🙏 **重要提醒**：記得『摸鴨屁屁』招好運、至高岩寺洗觀音祈福。",
-          map: "https://maps.app.goo.gl/sugamo",
+          map: "https://maps.app.goo.gl/KLK2A8Ny5LGTf3bn6",
           details: { 
             food: "鹽大福、銅鑼燒、七味粉", 
             guide: "必逛清單：1.千成もなか 2.摸鴨屁屁 3.元祖塩大福 4.おいもやさん興伸(大學芋) 5.高岩寺(洗觀音) 6.松宮商店(現調七味粉)。" 
@@ -304,14 +304,12 @@ export const itinerary = [
         { 
           time: "12:30", title: "しゃぶ辰 西巣鴨店", type: "food", 
           note: "🥘 **必吃美食**：頂級黑毛和牛壽喜燒/涮涮鍋。\n⚠️ **重要提醒**：13:00 前必須入店，排隊名店建議提早。",
-          map: "https://maps.app.goo.gl/shabutatsu",
+          map: "https://maps.app.goo.gl/tt2JykwgLcNStQzk7",
           details: { hours: "11:30~14:00", food: "和牛壽喜燒", guide: "這間是當地超人氣店，CP 值極高，午餐套餐非常划算。" }
         }
       ]
-    }
-  ],
-  // 🟢 下方為分流邏輯，請確保 App.jsx 能正確讀取
-  groups: [
+  
+  },
     {
       name: "A組 (上野採買返台)",
       activities: [
@@ -323,7 +321,7 @@ export const itinerary = [
         { 
           time: "15:30", title: "六厘舍 上野店", type: "food", 
           note: "🍜 **必吃美食**：招牌濃厚沾麵。\n⚠️ **重要提醒**：上車前最後一餐，人多時需排隊。",
-          map: "https://maps.app.goo.gl/rokurinsha_ueno",
+          map: "https://maps.app.goo.gl/JBPCsinaAKyzFqsh7",
           details: { hours: "10:00~23:00", guide: "位於上野車站舍內，吃完直接去搭 Skyliner 非常順路。" }
         },
         { 
@@ -339,7 +337,7 @@ export const itinerary = [
         { 
           time: "13:30", title: "唐吉訶德 御徒町店 / Milk Stand", type: "spot", 
           note: "💊 **必買伴手禮**：最後藥妝補貨。\n🥛 **必點菜單**：Milk Stand 瓶裝牛奶。",
-          map: "https://maps.app.goo.gl/donki_okachimachi",
+          map: "https://maps.app.goo.gl/eoYnHZRwkT9Tri5eA",
           details: { hours: "24小時", guide: "御徒町店較不擁擠，逛起來較舒適。Milk Stand 在秋葉原/御徒町月台附近。" }
         },
         { 
@@ -350,7 +348,7 @@ export const itinerary = [
         { 
           time: "18:30", title: "上野 土古里 (燒肉)", type: "food", 
           note: "🥩 **必吃美食**：山形牛燒肉吃到飽。\n⚠️ **重要提醒**：當日行程最後一餐。",
-          map: "https://maps.app.goo.gl/tokori_ueno",
+          map: "https://maps.app.goo.gl/Xb4Bzr5bLps2hxS67",
           details: { hours: "11:00~22:00", food: "山形牛燒肉", guide: "環境舒適，適合慶祝旅程圓滿結束。" }
         }
       ]
