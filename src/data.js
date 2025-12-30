@@ -79,6 +79,7 @@ export const itinerary = [
   // data.js
 {
   date: "01/01 THU",
+
   weather: { icon: "❄️", temp: "-5°/1°", rain: "60%", wear: "雪場：專業雪衣(防水)+排汗衣(忌棉質)+保塊中層。必備毛帽、護目鏡。" },
   groups: [{ 
     name: "全體 (雪場選擇)", 
@@ -310,7 +311,7 @@ export const itinerary = [
     }
   ],
   // 🟢 下方為分流邏輯，請確保 App.jsx 能正確讀取
-  subGroups: [
+  groups: [
     {
       name: "A組 (上野採買返台)",
       activities: [

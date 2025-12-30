@@ -296,6 +296,12 @@ const handleDeleteMember = useCallback(async (id) => {
                 {/* 移除重複的 key={i}，保持 card 與內容結構 */}
                 <div
                   className={`flex gap-4 group ${act.details ? 'cursor-pointer' : ''}`}
+                onClick={() => {
+    if (act.details) {
+      // 這裡不論 details 是字串還是物件，都傳給 selectedSki
+      setSelectedSki(act);
+    }
+  }}
                 >
                   <div className="w-10 text-[10px] font-black text-gray-300 pt-1 tracking-tighter">
                     {act.time}
@@ -592,6 +598,26 @@ const handleDeleteMember = useCallback(async (id) => {
           <h4 className="location-header text-white text-xl">{selectedSki.title}</h4>
         </div>
         <div className="p-6 space-y-4">
+          {selectedSki.type !== 'ski' && selectedSki.details && (
+    <div className="space-y-3">
+      {typeof selectedSki.details === 'string' ? (
+        // 如果是字串，直接顯示
+        <p className="text-sm leading-relaxed text-[#2A3B49] whitespace-pre-line font-medium">
+          {selectedSki.details}
+        </p>
+      ) : (
+        // 如果是物件 (來自 data.js)，遍歷顯示所有 key
+        <div className="grid gap-3">
+          {Object.entries(selectedSki.details).map(([key, value]) => (
+            <div key={key} className="bg-gray-50 p-3 rounded-xl border-l-4 border-[#4E9A8E]">
+              <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">{key}</p>
+              <p className="text-xs font-bold text-[#2A3B49] leading-relaxed">{value}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )}
           {/* 彈窗內部的 Stats/Difficulty Bar 內容保持原樣... */}
           {selectedSki.type === 'ski' && (
             <div className="resort-stats">
