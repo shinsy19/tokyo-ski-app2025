@@ -4,7 +4,7 @@ import uenoImg from './assets/ueno_hotel.jpg';
 // --- 1. 行程資料 (含 A/B 組、導遊亮顯攻略) ---
 export const itinerary = [
   {
-    date: "12/31 TUE",
+    date: "12/31 WED",
     weather: { icon: "☀️", temp: "2°/8°", rain: "10%", wear: "洋蔥式：極輕羽絨+發熱衣。室內暖氣強，需方便穿脫，配件選配圍巾。" },
     groups: [
       {
@@ -78,7 +78,7 @@ export const itinerary = [
   },
   // data.js
 {
-  date: "01/01 WED",
+  date: "01/01 THU",
   weather: { icon: "❄️", temp: "-5°/1°", rain: "60%", wear: "雪場：專業雪衣(防水)+排汗衣(忌棉質)+保塊中層。必備毛帽、護目鏡。" },
   groups: [{ 
     name: "全體 (雪場選擇)", 
@@ -147,7 +147,7 @@ export const itinerary = [
   }]
 },
 {
-  date: "01/02 THU",
+  date: "01/02 FRI",
   weather: { icon: "❄️", temp: "-4°/2°", rain: "30%", wear: "雪國：發熱衣+防風防潑水外套。" },
   groups: [{
     name: "全體 (雪國逛街)",
@@ -212,7 +212,7 @@ export const itinerary = [
   }]
 },
   {
-    date: "01/03 FRI",
+    date: "01/03 SAT",
   weather: { 
     icon: "☀️", 
     temp: "3°/11°", 
@@ -275,7 +275,7 @@ export const itinerary = [
    ]
 },
   {
-  date: "01/04 SAT",
+  date: "01/04 SUN",
   weather: { 
     icon: "☁️", 
     temp: "4°/11°", 
@@ -359,7 +359,7 @@ export const itinerary = [
 
 // data.js
 {
-  date: "01/05 SUN",
+  date: "01/05 MON",
   weather: { 
     icon: "☀️", 
     temp: "3°/12°", 
